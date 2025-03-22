@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from django.contrib import messages
 from .models import Profile, Post, LikedPost, FollowerCount
 from django.contrib import auth
+from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.decorators import login_required
 import random
 # Create your views here.
@@ -103,6 +104,28 @@ def upload(request):
         return redirect('/')
 
 
+def changepassword(request):
+
+    if request.method == 'POST':
+        old_password = request.POST.get('oldpassword')
+        new_password1 = request.POST.get('newpassword1')
+        new_password2 = request.POST.get('newpassword2')
+
+        if not request.user.check_password(old_password):
+            messages.error(request, 'Old password is incorect')
+            return redirect('changepassword')
+        elif new_password1 != new_password2:
+            messages.error(request, 'new passowrd do not match')
+            return redirect('changepassword')
+        
+        request.user.set_password(new_password1)
+        request.user.save()
+        update_session_auth_hash(request, request.user)
+        messages.success(request, 'Password changed successfuly')
+        return redirect('index')
+
+
+    return render(request, 'changepassword.html')
 
 
 
@@ -110,7 +133,7 @@ def upload(request):
 
 
 
-@login_required(login_url='signin')
+
 def signup(request):
     if request.method == 'POST':
         username = request.POST['username']
@@ -145,7 +168,7 @@ def signup(request):
         else:
             messages.error(request, 'Password do not match')
     return render(request, 'signup.html')
-@login_required(login_url='signin')
+
 def login(request):
     if request.method == 'POST':
         username = request.POST['username']
@@ -240,6 +263,7 @@ def profile(request, pk):
         'user_following': user_following,
     }
     return render(request, 'profile.html', context)
+
 @login_required(login_url='signin')
 def follow(request):
     if request.method == 'POST':
