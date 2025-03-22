@@ -134,6 +134,10 @@ def changepassword(request):
 
 
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 68e21d66678c3de7e523109a536acf69868af528
 def signup(request):
     if request.method == 'POST':
         username = request.POST['username']
