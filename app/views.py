@@ -110,7 +110,7 @@ def upload(request):
 
 
 
-@login_required(login_url='signin')
+
 def signup(request):
     if request.method == 'POST':
         username = request.POST['username']
@@ -145,7 +145,7 @@ def signup(request):
         else:
             messages.error(request, 'Password do not match')
     return render(request, 'signup.html')
-@login_required(login_url='signin')
+
 def login(request):
     if request.method == 'POST':
         username = request.POST['username']
